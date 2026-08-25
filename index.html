@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alacena Automatizada</title>
+  <style>
+    :root {
+      --bg-color: #1c130e;
+      --card-bg: rgba(44, 30, 22, 0.95);
+      --accent: #d4a373;
+      --accent-hover: #bc8a5f;
+      --text-main: #fdf8f2;
+      --text-muted: #b39274;
+      --border: #443022;
+      --input-bg: #140d09;
+      --danger: #e53e3e;
+      --warning: #dd6b20;
+      --success: #38a169;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: url('fondoooo.jpeg');
+      background-repeat: repeat;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text-main);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .datetime-display {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .tabs {
+      display: flex;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background-color: var(--accent);
+      color: #1c130e;
+    }
+
+    .section-content {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-content.active {
+      display: flex;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .row .form-group {
+      flex: 1;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .toggle-group label {
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #1c130e;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-cancel {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .inventory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+    }
+
+    .item-info h3 {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .item-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .badge-ok { background: rgba(56, 161, 105, 0.2); color: var(--success); }
+    .badge-warning { background: rgba(221, 107, 32, 0.2); color: var(--warning); }
+    .badge-danger { background: rgba(229, 62, 62, 0.2); color: var(--danger); }
+
+    .item-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      font-size: 1.1rem;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 24px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1>🏷️ Alacena</h1>
+      <div id="reloj" class="datetime-display">--/--/----<br>--:--:--</div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('registro')">Cargar Elemento</button>
+      <button class="tab-btn" onclick="switchTab('inventario')">Ver Inventario</button>
+    </div>
+
+    <section id="sec-registro" class="section-content active">
+      <form id="alacenaForm" class="card" onsubmit="guardarElemento(event)">
+        <div class="form-group">
+          <label for="nombre">Nombre del Producto</label>
+          <input type="text" id="nombre" placeholder="Ej. Arroz, Leche, Harina" required>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" id="cantidad" step="0.01" min="0" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label for="unidad">Unidad</label>
+            <select id="unidad" required>
+              <option value="g">Gramos (g)</option>
+              <option value="kg">Kilos (kg)</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="L">Litros (L)</option>
+              <option value="unidades">Unidades</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <label for="tieneCaducidad">¿Tiene fecha de caducidad?</label>
+          <input type="checkbox" id="tieneCaducidad" onchange="toggleCaducidadField()" style="width: 20px; height: 20px;">
+        </div>
+
+        <div class="form-group" id="caducidadGroup" style="display: none;">
+          <label for="fechaCaducidad">Fecha de Vencimiento</label>
+          <input type="date" id="fechaCaducidad">
+        </div>
+
+        <button type="submit" id="btnSubmit" class="btn-submit">Guardar en Alacena</button>
+        <button type="button" id="btnCancelEdit" class="btn-cancel" onclick="cancelarEdicion()">Cancelar Edición</button>
+      </form>
+    </section>
+
+    <section id="sec-inventario" class="section-content">
+      <div id="inventarioContainer" class="inventory-list"></div>
+    </section>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjEd_eHFUh0Y-gfuHPvhwhCErP1pusXpx8hz7C5L8-f1hVW27ZDuV26xQXUkfL8ANR7g/exec'
+    let inventario = [];
+    let editandoId = null;
+
+    function actualizarReloj() {
+      const ahora = new Date();
+      const fecha = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const hora = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('reloj').innerHTML = `${fecha}<br>${hora}`;
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
+
+    async function cargarInventario() {
+      const container = document.getElementById('inventarioContainer');
+      container.innerHTML = '<div class="card empty-msg">Cargando inventario desde Google Sheets... ⏳</div>';
+
+      try {
+        const response = await fetch(GOOGLE_SCRIPT_URL);
+        inventario = await response.json();
+        renderInventario();
+      } catch (err) {
+        console.error('Error al cargar la hoja de cálculo:', err);
+        container.innerHTML = '<div class="card empty-msg">Error al conectar con Google Sheets.</div>';
+      }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+
+      if (tab === 'registro') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('sec-registro').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('sec-inventario').classList.add('active');
+        cargarInventario();
+      }
+    }
+
+    function toggleCaducidadField() {
+      const check = document.getElementById('tieneCaducidad').checked;
+      const caducidadGroup = document.getElementById('caducidadGroup');
+      const inputFecha = document.getElementById('fechaCaducidad');
+
+      caducidadGroup.style.display = check ? 'flex' : 'none';
+      inputFecha.required = check;
+      if (!check) inputFecha.value = '';
+    }
+
+    async function guardarElemento(e) {
+      e.preventDefault();
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = 'Guardando en la nube...';
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const cantidad = parseFloat(document.getElementById('cantidad').value);
+      const unidad = document.getElementById('unidad').value;
+      const tieneCaducidad = document.getElementById('tieneCaducidad').checked;
+      const fechaCaducidad = tieneCaducidad ? document.getElementById('fechaCaducidad').value : null;
+
+      const action = editandoId !== null ? 'update' : 'create';
+      const item = {
+        id: editandoId !== null ? editandoId : Date.now(),
+        nombre,
+        cantidad,
+        unidad,
+        fechaCaducidad
+      };
+
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action, item })
+        });
+
+        cancelarEdicion();
+        switchTab('inventario');
+      } catch (err) {
+        console.error('Error al guardar:', err);
+        alert('Hubo un error al guardar en Google Sheets.');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = 'Guardar en Alacena';
+      }
+    }
+
+    function editarItem(id) {
+      const item = inventario.find(i => i.id === id);
+      if (!item) return;
+
+      editandoId = id;
+
+      document.getElementById('nombre').value = item.nombre;
+      document.getElementById('cantidad').value = item.cantidad;
+      document.getElementById('unidad').value = item.unidad;
+
+      const tieneCad = Boolean(item.fechaCaducidad);
+      document.getElementById('tieneCaducidad').checked = tieneCad;
+      toggleCaducidadField();
+      if (tieneCad) {
+        document.getElementById('fechaCaducidad').value = item.fechaCaducidad;
+      }
+
+      document.getElementById('btnSubmit').innerText = 'Guardar Cambios';
+      document.getElementById('btnCancelEdit').style.display = 'block';
+
+      switchTab('registro');
+    }
+
+    function cancelarEdicion() {
+      editandoId = null;
+      document.getElementById('alacenaForm').reset();
+      toggleCaducidadField();
+      document.getElementById('btnSubmit').innerText = 'Guardar en Alacena';
+      document.getElementById('btnCancelEdit').style.display = 'none';
+    }
+
+    async function eliminarItem(id) {
+      if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+
+      renderCargandoEspecial();
+
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'delete', item: { id } })
+        });
+
+        cargarInventario();
+      } catch (err) {
+        console.error('Error al eliminar:', err);
+        alert('No se pudo eliminar el producto.');
+      }
+    }
+
+    function renderCargandoEspecial() {
+      const container = document.getElementById('inventarioContainer');
+      container.innerHTML = '<div class="card empty-msg">Actualizando Hoja de Cálculo... ⏳</div>';
+    }
+
+    function renderInventario() {
+      const container = document.getElementById('inventarioContainer');
+      container.innerHTML = '';
+
+      if (inventario.length === 0) {
+        container.innerHTML = '<div class="card empty-msg">No hay productos registrados en la alacena.</div>';
+        return;
+      }
+
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      const inventarioOrdenado = [...inventario].sort((a, b) => {
+        if (!a.fechaCaducidad) return 1;
+        if (!b.fechaCaducidad) return -1;
+        return new Date(a.fechaCaducidad) - new Date(b.fechaCaducidad);
+      });
+
+      inventarioOrdenado.forEach(item => {
+        let badgeHTML = '';
+
+        if (item.fechaCaducidad) {
+          const [year, month, day] = item.fechaCaducidad.split('-').map(Number);
+          const fechaVenc = new Date(year, month - 1, day);
+          
+          const diffTiempo = fechaVenc - hoy;
+          const diffDias = Math.round(diffTiempo / (1000 * 60 * 60 * 24));
+
+          if (diffDias < 0) {
+            badgeHTML = `<span class="badge badge-danger">Vencido (${item.fechaCaducidad})</span>`;
+          } else if (diffDias <= 5) {
+            badgeHTML = `<span class="badge badge-warning">Vence en ${diffDias} día(s)</span>`;
+          } else {
+            badgeHTML = `<span class="badge badge-ok">Vence: ${item.fechaCaducidad}</span>`;
+          }
+        }
+
+        const itemCard = document.createElement('div');
+        itemCard.className = 'item-card';
+        itemCard.innerHTML = `
+          <div class="item-info">
+            <h3>${item.nombre}</h3>
+            <p><strong>${item.cantidad} ${item.unidad}</strong></p>
+            ${badgeHTML}
+          </div>
+          <div class="item-actions">
+            <button class="btn-action" onclick="editarItem(${item.id})" aria-label="Editar producto">✏️</button>
+            <button class="btn-action" onclick="eliminarItem(${item.id})" aria-label="Eliminar producto">❌</button>
+          </div>
+        `;
+
+        container.appendChild(itemCard);
+      });
+    }
+
+    // Cargar inventario al iniciar
+    cargarInventario();
+  </script>
+</body>
+</html>
