@@ -345,7 +345,7 @@
           <input type="text" id="codigoBarras" placeholder="Escribe o escanea el código" oninput="buscarEnInventarioLocal(this.value)">
         </div>
 
-        <!-- Campo Nombre del Producto (Se formatea con emoji automáticamente al salir del campo) -->
+        <!-- Campo Nombre del Producto -->
         <div class="form-group">
           <label for="nombre">Nombre del Producto</label>
           <input type="text" id="nombre" placeholder="Ej. Leche, Arroz, Carne" onblur="autoAsignarEmojiInput()" required>
@@ -397,7 +397,6 @@
     function obtenerEmojiPorNombre(nombre) {
       if (!nombre) return '';
       
-      // Si el nombre ya contiene un emoji, mantenemos la cadena igual
       const regexEmoji = /\p{Extended_Pictographic}/u;
       if (regexEmoji.test(nombre)) return nombre;
 
@@ -440,7 +439,6 @@
         }
       }
 
-      // Emoji por defecto si no reconoce la palabra
       return `📦 ${nombre}`;
     }
 
@@ -544,15 +542,30 @@
 
     function onScanFailure(error) {}
 
+    // Busca coincidencia en la lista descargada de Google Sheets y activa Modo Edición si existe
     function buscarEnInventarioLocal(barcode) {
-      if (!barcode || barcode.trim() === '') return;
-      const codigoLimpio = barcode.trim();
+      if (!barcode || String(barcode).trim() === '') return;
+      const codigoLimpio = String(barcode).trim();
 
       const encontrado = inventario.find(i => i.codigoBarras && String(i.codigoBarras).trim() === codigoLimpio);
 
       if (encontrado) {
+        // Activa modo edición con la ID del producto ya existente
+        editandoId = encontrado.id;
+
         document.getElementById('nombre').value = encontrado.nombre;
+        document.getElementById('cantidad').value = encontrado.cantidad;
         document.getElementById('unidad').value = encontrado.unidad;
+
+        const tieneCad = Boolean(encontrado.fechaCaducidad);
+        document.getElementById('tieneCaducidad').checked = tieneCad;
+        toggleCaducidadField();
+        if (tieneCad) {
+          document.getElementById('fechaCaducidad').value = encontrado.fechaCaducidad;
+        }
+
+        document.getElementById('btnSubmit').innerText = 'Guardar Cambios (Editar)';
+        document.getElementById('btnCancelEdit').style.display = 'block';
       }
     }
 
@@ -567,17 +580,25 @@
     actualizarReloj();
 
     // --- GESTIÓN DE INVENTARIO ---
-    async function cargarInventario() {
+    async function cargarInventario(render = false) {
       const container = document.getElementById('inventarioContainer');
-      container.innerHTML = '<div class="card empty-msg">Cargando inventario desde Google Sheets... ⏳</div>';
+      if (render) {
+        container.innerHTML = '<div class="card empty-msg">Cargando inventario desde Google Sheets... ⏳</div>';
+      }
 
       try {
         const response = await fetch(GOOGLE_SCRIPT_URL);
         inventario = await response.json();
-        renderInventario();
+        if (render) renderInventario();
+
+        // Si ya había un código escrito antes de descargar la lista, busca coincidencia
+        const codigoActual = document.getElementById('codigoBarras').value;
+        if (codigoActual) buscarEnInventarioLocal(codigoActual);
       } catch (err) {
         console.error('Error al cargar la hoja de cálculo:', err);
-        container.innerHTML = '<div class="card empty-msg">Error al conectar con Google Sheets.</div>';
+        if (render) {
+          container.innerHTML = '<div class="card empty-msg">Error al conectar con Google Sheets.</div>';
+        }
       }
     }
 
@@ -592,7 +613,7 @@
       } else {
         document.querySelectorAll('.tab-btn')[1].classList.add('active');
         document.getElementById('sec-inventario').classList.add('active');
-        cargarInventario();
+        cargarInventario(true);
       }
     }
 
@@ -669,7 +690,7 @@
         document.getElementById('fechaCaducidad').value = item.fechaCaducidad;
       }
 
-      document.getElementById('btnSubmit').innerText = 'Guardar Cambios';
+      document.getElementById('btnSubmit').innerText = 'Guardar Cambios (Editar)';
       document.getElementById('btnCancelEdit').style.display = 'block';
 
       switchTab('registro');
@@ -697,7 +718,7 @@
           body: JSON.stringify({ action: 'delete', item: { id } })
         });
 
-        cargarInventario();
+        cargarInventario(true);
       } catch (err) {
         console.error('Error al eliminar:', err);
         alert('No se pudo eliminar el producto.');
@@ -767,7 +788,8 @@
       });
     }
 
-    cargarInventario();
+    // Descargar datos en segundo plano inmediatamente al iniciar la web
+    cargarInventario(false);
   </script>
 </body>
 </html>
