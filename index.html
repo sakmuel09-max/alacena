@@ -342,13 +342,13 @@
               📷 Escanear
             </button>
           </div>
-          <input type="text" id="codigoBarras" placeholder="Escribe o escanea el código" onchange="buscarEnOpenFoodFacts(this.value)">
+          <input type="text" id="codigoBarras" placeholder="Escribe o escanea el código" oninput="buscarEnInventarioLocal(this.value)">
         </div>
 
-        <!-- Campo Nombre del Producto -->
+        <!-- Campo Nombre del Producto (Se formatea con emoji automáticamente al salir del campo) -->
         <div class="form-group">
           <label for="nombre">Nombre del Producto</label>
-          <input type="text" id="nombre" placeholder="Ej. Arroz, Leche, Harina" required>
+          <input type="text" id="nombre" placeholder="Ej. Leche, Arroz, Carne" onblur="autoAsignarEmojiInput()" required>
         </div>
 
         <div class="row">
@@ -393,6 +393,64 @@
     let inventario = [];
     let editandoId = null;
 
+    // --- DETECTOR Y ASIGNADOR DE EMOJIS POR NOMBRE ---
+    function obtenerEmojiPorNombre(nombre) {
+      if (!nombre) return '';
+      
+      // Si el nombre ya contiene un emoji, mantenemos la cadena igual
+      const regexEmoji = /\p{Extended_Pictographic}/u;
+      if (regexEmoji.test(nombre)) return nombre;
+
+      const texto = nombre.toLowerCase();
+
+      const mapaCategorias = [
+        { keywords: ['leche', 'yogur', 'yoghurt', 'lacteo'], emoji: '🥛' },
+        { keywords: ['queso', 'crema'], emoji: '🧀' },
+        { keywords: ['pan', 'tostada', 'factura', 'medialuna'], emoji: '🍞' },
+        { keywords: ['arroz', 'trigo', 'cereal'], emoji: '🌾' },
+        { keywords: ['fideo', 'pasta', 'espagueti', 'tallarin', 'macarron'], emoji: '🍝' },
+        { keywords: ['carne', 'asado', 'bife', 'hamburguesa', 'cerdo'], emoji: '🥩' },
+        { keywords: ['pollo', 'suprema', 'alita'], emoji: '🍗' },
+        { keywords: ['pescado', 'atun', 'salmon', 'merluza'], emoji: '🐟' },
+        { keywords: ['manzana'], emoji: '🍎' },
+        { keywords: ['banana', 'platano'], emoji: '🍌' },
+        { keywords: ['naranja', 'mandarina'], emoji: '🍊' },
+        { keywords: ['limon'], emoji: '🍋' },
+        { keywords: ['tomate'], emoji: '🍅' },
+        { keywords: ['papa', 'patata'], emoji: '🥔' },
+        { keywords: ['cebolla'], emoji: '🧅' },
+        { keywords: ['huevo', 'huevos'], emoji: '🥚' },
+        { keywords: ['aceite', 'oliva'], emoji: '🫒' },
+        { keywords: ['agua'], emoji: '💧' },
+        { keywords: ['jugo', 'gaseosa', 'refresco', 'coca'], emoji: '🧃' },
+        { keywords: ['cerveza', 'birra'], emoji: '🍺' },
+        { keywords: ['vino'], emoji: '🍷' },
+        { keywords: ['cafe'], emoji: '☕' },
+        { keywords: ['te'], emoji: '🫖' },
+        { keywords: ['chocolate', 'cacao'], emoji: '🍫' },
+        { keywords: ['galleta', 'galletita', 'bizcocho'], emoji: '🍪' },
+        { keywords: ['harina'], emoji: '🌾' },
+        { keywords: ['jabon', 'detergente', 'limpiador', 'lavandina', 'shampoo', 'desinfectante'], emoji: '🧼' },
+        { keywords: ['papel', 'higienico', 'servilleta'], emoji: '🧻' }
+      ];
+
+      for (const cat of mapaCategorias) {
+        if (cat.keywords.some(kw => texto.includes(kw))) {
+          return `${cat.emoji} ${nombre}`;
+        }
+      }
+
+      // Emoji por defecto si no reconoce la palabra
+      return `📦 ${nombre}`;
+    }
+
+    function autoAsignarEmojiInput() {
+      const inputNombre = document.getElementById('nombre');
+      if (inputNombre.value.trim() !== '') {
+        inputNombre.value = obtenerEmojiPorNombre(inputNombre.value.trim());
+      }
+    }
+
     // --- CLIMA DEL DÍA ---
     function obtenerClima() {
       const climaEl = document.getElementById('clima');
@@ -432,7 +490,7 @@
     }
     obtenerClima();
 
-    // --- ESCÁNER Y OPEN FOOD FACTS ---
+    // --- ESCÁNER Y BÚSQUEDA LOCAL ---
     let html5QrCode = null;
     let escanerActivo = false;
 
@@ -481,39 +539,20 @@
     function onScanSuccess(decodedText) {
       detenerEscaner();
       document.getElementById('codigoBarras').value = decodedText;
-      buscarEnOpenFoodFacts(decodedText);
+      buscarEnInventarioLocal(decodedText);
     }
 
     function onScanFailure(error) {}
 
-    async function buscarEnOpenFoodFacts(barcode) {
+    function buscarEnInventarioLocal(barcode) {
       if (!barcode || barcode.trim() === '') return;
-      
-      const inputNombre = document.getElementById('nombre');
-      const placeholderOriginal = inputNombre.placeholder;
-      
-      inputNombre.placeholder = "🔎 Buscando en Open Food Facts...";
+      const codigoLimpio = barcode.trim();
 
-      try {
-        const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode.trim()}.json`);
-        const data = await response.json();
+      const encontrado = inventario.find(i => i.codigoBarras && String(i.codigoBarras).trim() === codigoLimpio);
 
-        if (data.status === 1 && data.product) {
-          const p = data.product;
-          const nombreEncontrado = p.product_name_es || p.product_name || (p.brands ? `${p.brands} - Producto` : null);
-          
-          if (nombreEncontrado) {
-            inputNombre.value = nombreEncontrado;
-          } else {
-            alert(`Código ${barcode}: Producto encontrado pero sin nombre registrado.`);
-          }
-        } else {
-          alert(`Código ${barcode}: No se encontró en Open Food Facts. Ingrésalo manualmente.`);
-        }
-      } catch (err) {
-        console.error("Error en consulta API:", err);
-      } finally {
-        inputNombre.placeholder = placeholderOriginal;
+      if (encontrado) {
+        document.getElementById('nombre').value = encontrado.nombre;
+        document.getElementById('unidad').value = encontrado.unidad;
       }
     }
 
@@ -575,7 +614,9 @@
       btnSubmit.innerText = 'Guardando en la nube...';
 
       const codigoBarras = document.getElementById('codigoBarras').value.trim();
-      const nombre = document.getElementById('nombre').value.trim();
+      const nombreBruto = document.getElementById('nombre').value.trim();
+      const nombre = obtenerEmojiPorNombre(nombreBruto);
+      
       const cantidad = parseFloat(document.getElementById('cantidad').value);
       const unidad = document.getElementById('unidad').value;
       const tieneCaducidad = document.getElementById('tieneCaducidad').checked;
