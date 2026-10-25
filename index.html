@@ -380,6 +380,23 @@
 
         <button type="submit" id="btnSubmit" class="btn-submit">Guardar en Alacena</button>
         <button type="button" id="btnCancelEdit" class="btn-cancel" onclick="cancelarEdicion()">Cancelar Edición</button>
+        <!-- ... resto de campos del formulario (código de barras, nombre, cantidad, etc.) ... -->
+
+        <button type="submit" id="btnSubmit" class="btn-submit">Guardar en Alacena</button>
+        <button type="button" id="btnCancelEdit" class="btn-cancel" onclick="cancelarEdicion()">Cancelar Edición</button>
+
+        <!-- SECCIÓN DE BOTONES DE CONTROL (AL FINAL DEL FORMULARIO) -->
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 16px 0 12px 0;">
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-submit" style="margin-top: 0; background: #38a169; color: #ffffff;" onclick="controlarAlacena('abrir')">
+            🔓 Abrir Puertas
+          </button>
+          <button type="button" class="btn-submit" style="margin-top: 0; background: #dd6b20; color: #ffffff;" onclick="controlarAlacena('apagar-luces')">
+            💡 Apagar Luces
+          </button>
+        </div>
+
+      </form>
       </form>
     </section>
 
@@ -801,8 +818,6 @@
 
     <!-- NUEVOS BOTONES DE CONTROL DE HARDWARE -->
     <div class="card" style="padding: 12px; display: flex; gap: 10px;">
-      <button type="button" class="btn-submit" style="margin: 0; background: #38a169; color: white;" onclick="controlarAlacena('abrir')">🔓 Abrir Puertas</button>
-      <button type="button" class="btn-submit" style="margin: 0; background: #dd6b20; color: white;" onclick="controlarAlacena('apagar-luces')">💡 Apagar Luces</button>
     </div>
         `;
 
@@ -812,6 +827,17 @@
 
     // Descargar datos en segundo plano inmediatamente al iniciar la web
     cargarInventario(false);
+    // --- CONTROL DE HARDWARE ESP32 ---
+    async function controlarAlacena(accion) {
+      try {
+        // Realiza la petición a la ruta según la acción elegida
+        await fetch(`http://${ESP32_IP}/api/${accion}`, { mode: 'no-cors' });
+        console.log(`Acción enviada al ESP32: ${accion}`);
+      } catch (err) {
+        console.error('Error de comunicación con el ESP32:', err);
+        alert('No se pudo establecer conexión con el dispositivo.');
+      }
+    }
   </script>
 </body>
 </html>
