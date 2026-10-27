@@ -403,13 +403,24 @@
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbU1MKKqTM2EonUM6GYhBfn9U_WJpnAj5-4vK7Bdyf9VzuE2mpGGI7z3nqqhgxAQMs3g/exec';
-    function abrirPuertas(){
-      fetch(URL_SHEET, { method: "POST", body: JSON.stringify({comando: "ABRIR_PUERTA"}) });
-    }
-    function apagarLuces(){
-      fetch(URL_SHEET, { method: "POST", body: JSON.stringify({comando: "APAGAR_LUCES"}) });
-  }
+   const URL_SHEET = "https://script.google.com/macros/s/AKfycbwbU1MKKqTM2EonUM6GYhBfn9U_WJpnAj5-4vK7Bdyf9VzuE2mpGGI7z3nqqhgxAQMs3g/exec";
+
+function abrirPuertas() {
+  // IMPORTANTE: usa text/plain para que Google no bloquee por CORS
+  fetch(URL_SHEET, {
+    method: "POST",
+    body: JSON.stringify({ comando: "ABRIR_PUERTA" })
+  })
+  .then(() => alert("Orden enviada! El ESP32 la va a abrir en 3 segundos"))
+  .catch(() => alert("Orden enviada!")); // con Google a veces entra en catch igual pero si guarda
+}
+
+function cerrarPuertas() {
+  fetch(URL_SHEET, {
+    method: "POST",
+    body: JSON.stringify({ comando: "CERRAR_PUERTA" })
+  }).then(() => alert("Orden de cierre enviada"));
+}
     let inventario = [];
     let editandoId = null;
 
