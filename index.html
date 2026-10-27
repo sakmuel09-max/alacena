@@ -403,7 +403,13 @@
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyjEd_eHFUh0Y-gfuHPvhwhCErP1pusXpx8hz7C5L8-f1hVW27ZDuV26xQXUkfL8ANR7g/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwbU1MKKqTM2EonUM6GYhBfn9U_WJpnAj5-4vK7Bdyf9VzuE2mpGGI7z3nqqhgxAQMs3g/exec';
+    function abrirPuertas(){
+      fetch(URL_SHEET, { method: "POST", body: JSON.stringify({comando: "ABRIR_PUERTA"}) });
+    }
+    function apagarLuces(){
+      fetch(URL_SHEET, { method: "POST", body: JSON.stringify({comando: "APAGAR_LUCES"}) });
+  }
     let inventario = [];
     let editandoId = null;
 
