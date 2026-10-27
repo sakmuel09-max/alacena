@@ -4,316 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Alacena Automatizada</title>
-
-  <!-- Librería html5-qrcode para escaneo con cámara -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
   <style>
-    :root {
-      --bg-color: #1c130e;
-      --card-bg: rgba(44, 30, 22, 0.95);
-      --accent: #d4a373;
-      --accent-hover: #bc8a5f;
-      --text-main: #fdf8f2;
-      --text-muted: #b39274;
-      --border: #443022;
-      --input-bg: #140d09;
-      --danger: #e53e3e;
-      --warning: #dd6b20;
-      --success: #38a169;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      background-image: url('fondoooo.jpeg');
-      background-repeat: repeat;
-      background-position: center;
-      background-attachment: fixed;
-      color: var(--text-main);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .app-container {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      backdrop-filter: blur(4px);
-    }
-
-    header h1 {
-      font-size: 1.2rem;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .header-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .datetime-display {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-align: right;
-      font-weight: 500;
-      line-height: 1.3;
-    }
-
-    .weather-badge {
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: right;
-      line-height: 1.2;
-    }
-
-    .tabs {
-      display: flex;
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 4px;
-      border: 1px solid var(--border);
-      backdrop-filter: blur(4px);
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn.active {
-      background-color: var(--accent);
-      color: #1c130e;
-    }
-
-    .section-content {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .section-content.active {
-      display: flex;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    label {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--input-bg);
-      color: var(--text-main);
-      font-size: 1rem;
-      outline: none;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--accent);
-    }
-
-    .row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .row .form-group {
-      flex: 1;
-    }
-
-    .toggle-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-    }
-
-    .toggle-group label {
-      cursor: pointer;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 14px;
-      background: var(--accent);
-      border: none;
-      border-radius: 10px;
-      color: #1c130e;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
-    }
-
-    .btn-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-cancel {
-      width: 100%;
-      padding: 10px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
-      display: none;
-    }
-
-    .inventory-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .item-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-    }
-
-    .item-info h3 {
-      font-size: 1.05rem;
-      margin-bottom: 4px;
-    }
-
-    .item-info p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .item-barcode {
-      font-size: 0.75rem;
-      color: var(--accent);
-      margin-top: 2px;
-    }
-
-    .badge {
-      font-size: 0.75rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: bold;
-      display: inline-block;
-      margin-top: 4px;
-    }
-
-    .badge-ok { background: rgba(56, 161, 105, 0.2); color: var(--success); }
-    .badge-warning { background: rgba(221, 107, 32, 0.2); color: var(--warning); }
-    .badge-danger { background: rgba(229, 62, 62, 0.2); color: var(--danger); }
-
-    .item-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-action {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 6px;
-      font-size: 1.1rem;
-    }
-
-    .empty-msg {
-      text-align: center;
-      color: var(--text-muted);
-      padding: 24px;
-      font-style: italic;
-    }
-
-    .btn-scan-trigger {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .btn-scan-trigger:hover {
-      background: var(--accent);
-      color: #1c130e;
-    }
-
-    #reader {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 14px;
-      border: 1px solid var(--accent);
-    }
+    :root { --bg-color:#1c130e; --card-bg:rgba(44,30,22,0.95); --accent:#d4a373; --accent-hover:#bc8a5f; --text-main:#fdf8f2; --text-muted:#b39274; --border:#443022; --input-bg:#140d09; --danger:#e53e3e; --warning:#dd6b20; --success:#38a169; }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+    body{background-color:var(--bg-color);background-image:url('fondoooo.jpeg');background-repeat:repeat;background-position:center;background-attachment:fixed;color:var(--text-main);padding:16px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+    .app-container{width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(4px)}
+    header h1{font-size:1.2rem;color:var(--accent);display:flex;align-items:center;gap:6px}
+    .header-info{display:flex;align-items:center;gap:12px}
+    .datetime-display{font-size:0.75rem;color:var(--text-muted);text-align:right;font-weight:500;line-height:1.3}
+    .weather-badge{font-size:0.85rem;font-weight:600;text-align:right;line-height:1.2}
+    .tabs{display:flex;background:var(--card-bg);border-radius:12px;padding:4px;border:1px solid var(--border);backdrop-filter:blur(4px)}
+    .tab-btn{flex:1;padding:10px;background:transparent;border:none;color:var(--text-muted);font-weight:600;border-radius:8px;cursor:pointer;transition:all 0.2s ease}
+    .tab-btn.active{background-color:var(--accent);color:#1c130e}
+    .section-content{display:none;flex-direction:column;gap:16px}
+    .section-content.active{display:flex}
+    .card{background:var(--card-bg);border-radius:16px;padding:20px;border:1px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,0.6);backdrop-filter:blur(4px)}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    label{font-size:0.85rem;color:var(--text-muted);font-weight:500}
+    input,select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text-main);font-size:1rem;outline:none}
+    input:focus,select:focus{border-color:var(--accent)}
+    .row{display:flex;gap:12px}.row .form-group{flex:1}
+    .toggle-group{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+    .btn-submit{width:100%;padding:14px;background:var(--accent);border:none;border-radius:10px;color:#1c130e;font-weight:bold;font-size:1rem;cursor:pointer;margin-top:8px;transition:background 0.2s}
+    .btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+    .btn-cancel{width:100%;padding:10px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text-muted);font-weight:600;font-size:0.9rem;cursor:pointer;margin-top:8px;display:none}
+    .inventory-list{display:flex;flex-direction:column;gap:12px}
+    .item-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);backdrop-filter:blur(4px)}
+    .item-info h3{font-size:1.05rem;margin-bottom:4px}.item-info p{font-size:0.85rem;color:var(--text-muted)}.item-barcode{font-size:0.75rem;color:var(--accent);margin-top:2px}
+    .badge{font-size:0.75rem;padding:4px 8px;border-radius:6px;font-weight:bold;display:inline-block;margin-top:4px}
+    .badge-ok{background:rgba(56,161,105,0.2);color:var(--success)}.badge-warning{background:rgba(221,107,32,0.2);color:var(--warning)}.badge-danger{background:rgba(229,62,62,0.2);color:var(--danger)}
+    .item-actions{display:flex;gap:6px}.btn-action{background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:6px;font-size:1.1rem}
+    .empty-msg{text-align:center;color:var(--text-muted);padding:24px;font-style:italic}
+    .btn-scan-trigger{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:600}
+    #reader{width:100%;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid var(--accent)}
   </style>
 </head>
 <body>
-
   <div class="app-container">
     <header>
       <h1>🏷️ Alacena</h1>
@@ -322,7 +50,6 @@
         <div id="reloj" class="datetime-display">--/--/----<br>--:--:--</div>
       </div>
     </header>
-
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('registro')">Cargar Elemento</button>
       <button class="tab-btn" onclick="switchTab('inventario')">Ver Inventario</button>
@@ -330,70 +57,36 @@
 
     <section id="sec-registro" class="section-content active">
       <form id="alacenaForm" class="card" onsubmit="guardarElemento(event)">
-        
-        <!-- Visor del escáner -->
-        <div id="reader" style="display: none;"></div>
-
-        <!-- Campo Código de Barras -->
+        <div id="reader" style="display:none;"></div>
         <div class="form-group">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
             <label for="codigoBarras">Código de Barras</label>
-            <button type="button" id="btnScan" class="btn-scan-trigger" onclick="toggleEscaner()">
-              📷 Escanear
-            </button>
+            <button type="button" id="btnScan" class="btn-scan-trigger" onclick="toggleEscaner()">📷 Escanear</button>
           </div>
           <input type="text" id="codigoBarras" placeholder="Escribe o escanea el código" oninput="buscarEnInventarioLocal(this.value)">
         </div>
-
-        <!-- Campo Nombre del Producto -->
         <div class="form-group">
           <label for="nombre">Nombre del Producto</label>
           <input type="text" id="nombre" placeholder="Ej. Leche, Arroz, Carne" onblur="autoAsignarEmojiInput()" required>
         </div>
-
         <div class="row">
-          <div class="form-group">
-            <label for="cantidad">Cantidad</label>
-            <input type="number" id="cantidad" step="0.01" min="0" placeholder="0.00" required>
-          </div>
-          <div class="form-group">
-            <label for="unidad">Unidad</label>
-            <select id="unidad" required>
-              <option value="g">Gramos (g)</option>
-              <option value="kg">Kilos (kg)</option>
-              <option value="ml">Mililitros (ml)</option>
-              <option value="L">Litros (L)</option>
-              <option value="unidades">Unidades</option>
-            </select>
-          </div>
+          <div class="form-group"><label for="cantidad">Cantidad</label><input type="number" id="cantidad" step="0.01" min="0" placeholder="0.00" required></div>
+          <div class="form-group"><label for="unidad">Unidad</label><select id="unidad" required><option value="g">Gramos (g)</option><option value="kg">Kilos (kg)</option><option value="ml">Mililitros (ml)</option><option value="L">Litros (L)</option><option value="unidades">Unidades</option></select></div>
         </div>
-
-        <div class="toggle-group">
-          <label for="tieneCaducidad">¿Tiene fecha de caducidad?</label>
-          <input type="checkbox" id="tieneCaducidad" onchange="toggleCaducidadField()" style="width: 20px; height: 20px;">
-        </div>
-
-        <div class="form-group" id="caducidadGroup" style="display: none;">
-          <label for="fechaCaducidad">Fecha de Vencimiento</label>
-          <input type="date" id="fechaCaducidad">
-        </div>
-
+        <div class="toggle-group"><label for="tieneCaducidad">¿Tiene fecha de caducidad?</label><input type="checkbox" id="tieneCaducidad" onchange="toggleCaducidadField()" style="width:20px;height:20px;"></div>
+        <div class="form-group" id="caducidadGroup" style="display:none;"><label for="fechaCaducidad">Fecha de Vencimiento</label><input type="date" id="fechaCaducidad"></div>
         <button type="submit" id="btnSubmit" class="btn-submit">Guardar en Alacena</button>
         <button type="button" id="btnCancelEdit" class="btn-cancel" onclick="cancelarEdicion()">Cancelar Edición</button>
-        <!-- ... resto de campos del formulario (código de barras, nombre, cantidad, etc.) ... -->
         
-        <!-- SECCIÓN DE BOTONES DE CONTROL (AL FINAL DEL FORMULARIO) -->
-        <hr style="border: 0; border-top: 1px solid var(--border); margin: 16px 0 12px 0;">
-        <div style="display: flex; gap: 10px;">
-          <button type="button" class="btn-submit" style="margin-top: 0; background: #38a169; color: #ffffff;" onclick="controlarAlacena('abrir')">
-            🔓 Abrir Puertas
-          </button>
-          <button type="button" class="btn-submit" style="margin-top: 0; background: #dd6b20; color: #ffffff;" onclick="controlarAlacena('apagar-luces')">
-            💡 Apagar Luces
-          </button>
+        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0 12px 0;">
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn-submit" style="margin-top:0;background:#38a169;color:#fff;" onclick="controlarAlacena('abrir')">🔓 Abrir Puertas</button>
+          <button type="button" class="btn-submit" style="margin-top:0;background:#dd6b20;color:#fff;" onclick="controlarAlacena('cerrar')">🔒 Cerrar</button>
         </div>
-
-      </form>
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button type="button" class="btn-submit" style="margin-top:0;background:#443022;color:#fff;" onclick="controlarAlacena('apagar-luces')">💡 Apagar Luces</button>
+          <button type="button" class="btn-submit" style="margin-top:0;background:#d4a373;color:#1c130e;" onclick="controlarAlacena('encender-luces')">💡 Encender Luces</button>
+        </div>
       </form>
     </section>
 
@@ -402,455 +95,182 @@
     </section>
   </div>
 
-  <script>
-   const URL_SHEET = "https://script.google.com/macros/s/AKfycbwbU1MKKqTM2EonUM6GYhBfn9U_WJpnAj5-4vK7Bdyf9VzuE2mpGGI7z3nqqhgxAQMs3g/exec";
+<script>
+const URL_SHEET = "https://script.google.com/macros/s/AKfycbwbU1MKKqTM2EonUM6GYhBfn9U_WJpnAj5-4vK7Bdyf9VzuE2mpGGI7z3nqqhgxAQMs3g/exec";
+let inventario = [];
+let editandoId = null;
 
-function abrirPuertas() {
-  // IMPORTANTE: usa text/plain para que Google no bloquee por CORS
-  fetch(URL_SHEET, {
-    method: "POST",
-    body: JSON.stringify({ comando: "ABRIR_PUERTA" })
-  })
-  .then(() => alert("Orden enviada! El ESP32 la va a abrir en 3 segundos"))
-  .catch(() => alert("Orden enviada!")); // con Google a veces entra en catch igual pero si guarda
-}
-
-function cerrarPuertas() {
-  fetch(URL_SHEET, {
-    method: "POST",
-    body: JSON.stringify({ comando: "CERRAR_PUERTA" })
-  }).then(() => alert("Orden de cierre enviada"));
-}
-    let inventario = [];
-    let editandoId = null;
-
-    const ESP32_IP = '192.168.1.81'; // Cambia esto por la IP que muestre tu LCD//modificar al encender proyecto
-
-    async function enviarALCD(nombre, fecha) {
-  const nombreLimpio = encodeURIComponent(nombre);
-  const fechaLimpia = encodeURIComponent(fecha || 'Sin fecha');
-  
+// --- CONTROL DE HARDWARE VIA GOOGLE SHEET (SIN IP LOCAL) ---
+async function controlarAlacena(accion) {
+  let comando = "";
+  if(accion === 'abrir') comando = "ABRIR_PUERTA";
+  if(accion === 'cerrar') comando = "CERRAR_PUERTA";
+  if(accion === 'apagar-luces') comando = "APAGAR_LUCES";
+  if(accion === 'encender-luces') comando = "ENCENDER_LUCES";
+  if(!comando) return;
   try {
-    await fetch(`http://${ESP32_IP}/api/mostrar?nombre=${nombreLimpio}&fecha=${fechaLimpia}`);
-  } catch (err) {
-    console.error('Error al conectar con el ESP32:', err);
+    await fetch(URL_SHEET, { method: "POST", mode: "no-cors", body: JSON.stringify({ comando: comando }) });
+    alert("Orden " + comando + " enviada! El ESP32 la ejecuta en 3 seg.");
+  } catch (e) {
+    alert("Orden enviada!");
   }
 }
 
-    // --- DETECTOR Y ASIGNADOR DE EMOJIS POR NOMBRE ---
-    function obtenerEmojiPorNombre(nombre) {
-      if (!nombre) return '';
-      
-      const regexEmoji = /\p{Extended_Pictographic}/u;
-      if (regexEmoji.test(nombre)) return nombre;
+// --- EMOJIS ---
+function obtenerEmojiPorNombre(nombre){
+  if(!nombre) return '';
+  const regexEmoji = /\p{Extended_Pictographic}/u;
+  if(regexEmoji.test(nombre)) return nombre;
+  const texto = nombre.toLowerCase();
+  const mapa = [
+    {k:['leche','yogur','lacteo'],e:'🥛'},{k:['queso','crema'],e:'🧀'},{k:['pan','tostada'],e:'🍞'},{k:['arroz'],e:'🌾'},{k:['fideo','pasta'],e:'🍝'},{k:['carne','asado','bife'],e:'🥩'},{k:['pollo'],e:'🍗'},{k:['pescado','atun'],e:'🐟'},{k:['manzana'],e:'🍎'},{k:['banana'],e:'🍌'},{k:['huevo'],e:'🥚'},{k:['agua'],e:'💧'},{k:['jabon','detergente'],e:'🧼'}
+  ];
+  for(const c of mapa){ if(c.k.some(kw=>texto.includes(kw))) return `${c.e} ${nombre}`; }
+  return `📦 ${nombre}`;
+}
+function autoAsignarEmojiInput(){
+  const input = document.getElementById('nombre');
+  if(input.value.trim()!=='') input.value = obtenerEmojiPorNombre(input.value.trim());
+}
 
-      const texto = nombre.toLowerCase();
+// --- CLIMA Y RELOJ ---
+function obtenerClima(){
+  const el=document.getElementById('clima');
+  if(!navigator.geolocation){el.innerHTML='🌤️ --°C';return;}
+  navigator.geolocation.getCurrentPosition(p=>fetchClimaAPI(p.coords.latitude,p.coords.longitude),()=>fetchClimaAPI(-34.6037,-58.3816));
+}
+async function fetchClimaAPI(lat,lon){
+  const el=document.getElementById('clima');
+  try{
+    const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+    const data=await res.json();
+    const temp=Math.round(data.current_weather.temperature);
+    el.innerHTML=`🌤️ ${temp}°C`;
+  }catch{el.innerHTML='🌤️ --°C';}
+}
+obtenerClima();
+function actualizarReloj(){
+  const ahora=new Date();
+  document.getElementById('reloj').innerHTML=`${ahora.toLocaleDateString('es-ES')}<br>${ahora.toLocaleTimeString('es-ES')}`;
+}
+setInterval(actualizarReloj,1000); actualizarReloj();
 
-      const mapaCategorias = [
-        { keywords: ['leche', 'yogur', 'yoghurt', 'lacteo'], emoji: '🥛' },
-        { keywords: ['queso', 'crema'], emoji: '🧀' },
-        { keywords: ['pan', 'tostada', 'factura', 'medialuna'], emoji: '🍞' },
-        { keywords: ['arroz', 'trigo', 'cereal'], emoji: '🌾' },
-        { keywords: ['fideo', 'pasta', 'espagueti', 'tallarin', 'macarron'], emoji: '🍝' },
-        { keywords: ['carne', 'asado', 'bife', 'hamburguesa', 'cerdo'], emoji: '🥩' },
-        { keywords: ['pollo', 'suprema', 'alita'], emoji: '🍗' },
-        { keywords: ['pescado', 'atun', 'salmon', 'merluza'], emoji: '🐟' },
-        { keywords: ['manzana'], emoji: '🍎' },
-        { keywords: ['banana', 'platano'], emoji: '🍌' },
-        { keywords: ['naranja', 'mandarina'], emoji: '🍊' },
-        { keywords: ['limon'], emoji: '🍋' },
-        { keywords: ['tomate'], emoji: '🍅' },
-        { keywords: ['papa', 'patata'], emoji: '🥔' },
-        { keywords: ['cebolla'], emoji: '🧅' },
-        { keywords: ['huevo', 'huevos'], emoji: '🥚' },
-        { keywords: ['aceite', 'oliva'], emoji: '🫒' },
-        { keywords: ['agua'], emoji: '💧' },
-        { keywords: ['jugo', 'gaseosa', 'refresco', 'coca'], emoji: '🧃' },
-        { keywords: ['cerveza', 'birra'], emoji: '🍺' },
-        { keywords: ['vino'], emoji: '🍷' },
-        { keywords: ['cafe'], emoji: '☕' },
-        { keywords: ['te'], emoji: '🫖' },
-        { keywords: ['chocolate', 'cacao'], emoji: '🍫' },
-        { keywords: ['galleta', 'galletita', 'bizcocho'], emoji: '🍪' },
-        { keywords: ['harina'], emoji: '🌾' },
-        { keywords: ['jabon', 'detergente', 'limpiador', 'lavandina', 'shampoo', 'desinfectante'], emoji: '🧼' },
-        { keywords: ['papel', 'higienico', 'servilleta'], emoji: '🧻' }
-      ];
+// --- ESCANER ---
+let html5QrCode=null, escanerActivo=false;
+async function toggleEscaner(){
+  const readerDiv=document.getElementById('reader');
+  const btn=document.getElementById('btnScan');
+  if(escanerActivo){ await detenerEscaner(); return; }
+  readerDiv.style.display='block'; btn.textContent='❌ Cerrar'; escanerActivo=true;
+  if(!html5QrCode) html5QrCode=new Html5Qrcode("reader");
+  html5QrCode.start({facingMode:"environment"},{fps:10,qrbox:{width:250,height:150}},onScanSuccess,()=>{}).catch(()=>detenerEscaner());
+}
+async function detenerEscaner(){
+  if(html5QrCode&&escanerActivo){ try{await html5QrCode.stop();}catch(e){} }
+  document.getElementById('reader').style.display='none';
+  document.getElementById('btnScan').textContent='📷 Escanear';
+  escanerActivo=false;
+}
+function onScanSuccess(decodedText){ detenerEscaner(); document.getElementById('codigoBarras').value=decodedText; buscarEnInventarioLocal(decodedText); }
+function buscarEnInventarioLocal(barcode){
+  if(!barcode) return;
+  const encontrado=inventario.find(i=>i.codigoBarras && String(i.codigoBarras).trim()===String(barcode).trim());
+  if(encontrado){
+    editandoId=encontrado.id;
+    document.getElementById('nombre').value=encontrado.nombre;
+    document.getElementById('cantidad').value=encontrado.cantidad;
+    document.getElementById('unidad').value=encontrado.unidad;
+    document.getElementById('tieneCaducidad').checked=Boolean(encontrado.fechaCaducidad);
+    toggleCaducidadField();
+    if(encontrado.fechaCaducidad) document.getElementById('fechaCaducidad').value=encontrado.fechaCaducidad;
+    document.getElementById('btnSubmit').innerText='Guardar Cambios (Editar)';
+    document.getElementById('btnCancelEdit').style.display='block';
+  }
+}
 
-      for (const cat of mapaCategorias) {
-        if (cat.keywords.some(kw => texto.includes(kw))) {
-          return `${cat.emoji} ${nombre}`;
-        }
-      }
-
-      return `📦 ${nombre}`;
+// --- INVENTARIO ---
+async function cargarInventario(render=false){
+  const container=document.getElementById('inventarioContainer');
+  if(render) container.innerHTML='<div class="card empty-msg">Cargando inventario... ⏳</div>';
+  try{
+    const res=await fetch(URL_SHEET);
+    inventario=await res.json();
+    if(render) renderInventario();
+  }catch(err){ console.error(err); if(render) container.innerHTML='<div class="card empty-msg">Error al conectar con Sheets</div>'; }
+}
+function switchTab(tab){
+  detenerEscaner();
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section-content').forEach(s=>s.classList.remove('active'));
+  if(tab==='registro'){ document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('sec-registro').classList.add('active'); }
+  else{ document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('sec-inventario').classList.add('active'); cargarInventario(true); }
+}
+function toggleCaducidadField(){
+  const check=document.getElementById('tieneCaducidad').checked;
+  document.getElementById('caducidadGroup').style.display=check?'flex':'none';
+  document.getElementById('fechaCaducidad').required=check;
+  if(!check) document.getElementById('fechaCaducidad').value='';
+}
+async function guardarElemento(e){
+  e.preventDefault();
+  const btn=document.getElementById('btnSubmit'); btn.disabled=true; btn.innerText='Guardando...';
+  const item={ id: editandoId!==null?editandoId:Date.now(), codigoBarras: document.getElementById('codigoBarras').value.trim(), nombre: obtenerEmojiPorNombre(document.getElementById('nombre').value.trim()), cantidad: parseFloat(document.getElementById('cantidad').value), unidad: document.getElementById('unidad').value, fechaCaducidad: document.getElementById('tieneCaducidad').checked ? document.getElementById('fechaCaducidad').value : null };
+  const action=editandoId!==null?'update':'create';
+  try{
+    await fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify({action,item})});
+    cancelarEdicion(); switchTab('inventario');
+  }catch(err){ alert('Error al guardar'); } finally{ btn.disabled=false; btn.innerText='Guardar en Alacena'; }
+}
+function editarItem(id){
+  const item=inventario.find(i=>i.id===id); if(!item) return;
+  editandoId=id;
+  document.getElementById('codigoBarras').value=item.codigoBarras||'';
+  document.getElementById('nombre').value=item.nombre;
+  document.getElementById('cantidad').value=item.cantidad;
+  document.getElementById('unidad').value=item.unidad;
+  document.getElementById('tieneCaducidad').checked=Boolean(item.fechaCaducidad);
+  toggleCaducidadField();
+  if(item.fechaCaducidad) document.getElementById('fechaCaducidad').value=item.fechaCaducidad;
+  document.getElementById('btnSubmit').innerText='Guardar Cambios (Editar)';
+  document.getElementById('btnCancelEdit').style.display='block';
+  switchTab('registro');
+}
+function cancelarEdicion(){
+  detenerEscaner(); editandoId=null;
+  document.getElementById('alacenaForm').reset();
+  toggleCaducidadField();
+  document.getElementById('btnSubmit').innerText='Guardar en Alacena';
+  document.getElementById('btnCancelEdit').style.display='none';
+}
+async function eliminarItem(id){
+  if(!confirm('¿Eliminar producto?')) return;
+  document.getElementById('inventarioContainer').innerHTML='<div class="card empty-msg">Actualizando... ⏳</div>';
+  await fetch(URL_SHEET,{method:'POST',mode:'no-cors',body:JSON.stringify({action:'delete',item:{id}})});
+  setTimeout(()=>cargarInventario(true),1000);
+}
+function renderInventario(){
+  const container=document.getElementById('inventarioContainer'); container.innerHTML='';
+  if(inventario.length===0){ container.innerHTML='<div class="card empty-msg">No hay productos</div>'; return; }
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  [...inventario].sort((a,b)=>{
+    if(!a.fechaCaducidad) return 1; if(!b.fechaCaducidad) return -1;
+    return new Date(a.fechaCaducidad)-new Date(b.fechaCaducidad);
+  }).forEach(item=>{
+    let badge='';
+    if(item.fechaCaducidad){
+      const [y,m,d]=item.fechaCaducidad.split('-').map(Number);
+      const fv=new Date(y,m-1,d); const diff=Math.round((fv-hoy)/(1000*60*60*24));
+      if(diff<0) badge=`<span class="badge badge-danger">Vencido (${item.fechaCaducidad})</span>`;
+      else if(diff<=5) badge=`<span class="badge badge-warning">Vence en ${diff} día(s)</span>`;
+      else badge=`<span class="badge badge-ok">Vence: ${item.fechaCaducidad}</span>`;
     }
-
-    function autoAsignarEmojiInput() {
-      const inputNombre = document.getElementById('nombre');
-      if (inputNombre.value.trim() !== '') {
-        inputNombre.value = obtenerEmojiPorNombre(inputNombre.value.trim());
-      }
-    }
-
-    // --- CLIMA DEL DÍA ---
-    function obtenerClima() {
-      const climaEl = document.getElementById('clima');
-      if (!navigator.geolocation) {
-        climaEl.innerHTML = '🌡️ --°C';
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => fetchClimaAPI(pos.coords.latitude, pos.coords.longitude),
-        () => fetchClimaAPI(-34.6037, -58.3816)
-      );
-    }
-
-    async function fetchClimaAPI(lat, lon) {
-      const climaEl = document.getElementById('clima');
-      try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        const data = await res.json();
-        const code = data.current_weather.weathercode;
-        const temp = Math.round(data.current_weather.temperature);
-        
-        let emoji = '🌡️';
-        let desc = 'Despejado';
-
-        if (code === 0) { emoji = '☀️'; desc = 'Soleado'; }
-        else if (code >= 1 && code <= 3) { emoji = '⛅'; desc = 'Nublado'; }
-        else if (code >= 45 && code <= 48) { emoji = '🌫️'; desc = 'Niebla'; }
-        else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { emoji = '🌧️'; desc = 'Lluvia'; }
-        else if (code >= 71 && code <= 77) { emoji = '❄️'; desc = 'Nieve'; }
-        else if (code >= 95) { emoji = '⛈️'; desc = 'Tormenta'; }
-
-        climaEl.innerHTML = `${emoji} ${temp}°C<br><span style="font-size:0.65rem; color:var(--text-muted); font-weight:normal;">${desc}</span>`;
-      } catch (err) {
-        climaEl.innerHTML = '🌡️ --°C';
-      }
-    }
-    obtenerClima();
-
-    // --- ESCÁNER Y BÚSQUEDA LOCAL ---
-    let html5QrCode = null;
-    let escanerActivo = false;
-
-    async function toggleEscaner() {
-      const readerDiv = document.getElementById('reader');
-      const btnScan = document.getElementById('btnScan');
-
-      if (escanerActivo) {
-        await detenerEscaner();
-      } else {
-        readerDiv.style.display = 'block';
-        btnScan.textContent = '❌ Cerrar';
-        escanerActivo = true;
-
-        if (!html5QrCode) {
-          html5QrCode = new Html5Qrcode("reader");
-        }
-
-        const config = { fps: 10, qrbox: { width: 250, height: 150 } };
-        
-        html5QrCode.start(
-          { facingMode: "environment" },
-          config,
-          onScanSuccess,
-          onScanFailure
-        ).catch(err => {
-          alert("No se pudo acceder a la cámara. Revisa los permisos del navegador.");
-          detenerEscaner();
-        });
-      }
-    }
-
-    async function detenerEscaner() {
-      if (html5QrCode && escanerActivo) {
-        try {
-          await html5QrCode.stop();
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      document.getElementById('reader').style.display = 'none';
-      document.getElementById('btnScan').textContent = '📷 Escanear';
-      escanerActivo = false;
-    }
-
-    function onScanSuccess(decodedText) {
-      detenerEscaner();
-      document.getElementById('codigoBarras').value = decodedText;
-      buscarEnInventarioLocal(decodedText);
-    }
-
-    function onScanFailure(error) {}
-
-    // Busca coincidencia en la lista descargada de Google Sheets y activa Modo Edición si existe
-    function buscarEnInventarioLocal(barcode) {
-      if (!barcode || String(barcode).trim() === '') return;
-      const codigoLimpio = String(barcode).trim();
-
-      const encontrado = inventario.find(i => i.codigoBarras && String(i.codigoBarras).trim() === codigoLimpio);
-
-      if (encontrado) {
-        // Activa modo edición con la ID del producto ya existente
-        editandoId = encontrado.id;
-
-        document.getElementById('nombre').value = encontrado.nombre;
-        document.getElementById('cantidad').value = encontrado.cantidad;
-        document.getElementById('unidad').value = encontrado.unidad;
-
-        const tieneCad = Boolean(encontrado.fechaCaducidad);
-        document.getElementById('tieneCaducidad').checked = tieneCad;
-        toggleCaducidadField();
-        if (tieneCad) {
-          document.getElementById('fechaCaducidad').value = encontrado.fechaCaducidad;
-        }
-
-        document.getElementById('btnSubmit').innerText = 'Guardar Cambios (Editar)';
-        document.getElementById('btnCancelEdit').style.display = 'block';
-      }
-    }
-
-    // --- RELOJ ---
-    function actualizarReloj() {
-      const ahora = new Date();
-      const fecha = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-      const hora = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      document.getElementById('reloj').innerHTML = `${fecha}<br>${hora}`;
-    }
-    setInterval(actualizarReloj, 1000);
-    actualizarReloj();
-
-    // --- GESTIÓN DE INVENTARIO ---
-    async function cargarInventario(render = false) {
-      const container = document.getElementById('inventarioContainer');
-      if (render) {
-        container.innerHTML = '<div class="card empty-msg">Cargando inventario desde Google Sheets... ⏳</div>';
-      }
-
-      try {
-        const response = await fetch(GOOGLE_SCRIPT_URL);
-        inventario = await response.json();
-        if (render) renderInventario();
-
-        // Si ya había un código escrito antes de descargar la lista, busca coincidencia
-        const codigoActual = document.getElementById('codigoBarras').value;
-        if (codigoActual) buscarEnInventarioLocal(codigoActual);
-      } catch (err) {
-        console.error('Error al cargar la hoja de cálculo:', err);
-        if (render) {
-          container.innerHTML = '<div class="card empty-msg">Error al conectar con Google Sheets.</div>';
-        }
-      }
-    }
-
-    function switchTab(tab) {
-      detenerEscaner();
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
-
-      if (tab === 'registro') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('sec-registro').classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('sec-inventario').classList.add('active');
-        cargarInventario(true);
-      }
-    }
-
-    function toggleCaducidadField() {
-      const check = document.getElementById('tieneCaducidad').checked;
-      const caducidadGroup = document.getElementById('caducidadGroup');
-      const inputFecha = document.getElementById('fechaCaducidad');
-
-      caducidadGroup.style.display = check ? 'flex' : 'none';
-      inputFecha.required = check;
-      if (!check) inputFecha.value = '';
-    }
-
-    async function guardarElemento(e) {
-      e.preventDefault();
-
-      const btnSubmit = document.getElementById('btnSubmit');
-      btnSubmit.disabled = true;
-      btnSubmit.innerText = 'Guardando en la nube...';
-
-      const codigoBarras = document.getElementById('codigoBarras').value.trim();
-      const nombreBruto = document.getElementById('nombre').value.trim();
-      const nombre = obtenerEmojiPorNombre(nombreBruto);
-      
-      const cantidad = parseFloat(document.getElementById('cantidad').value);
-      const unidad = document.getElementById('unidad').value;
-      const tieneCaducidad = document.getElementById('tieneCaducidad').checked;
-      const fechaCaducidad = tieneCaducidad ? document.getElementById('fechaCaducidad').value : null;
-
-      const action = editandoId !== null ? 'update' : 'create';
-      const item = {
-        id: editandoId !== null ? editandoId : Date.now(),
-        codigoBarras,
-        nombre,
-        cantidad,
-        unidad,
-        fechaCaducidad
-      };
-
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action, item })
-        });
-
-        cancelarEdicion();
-        switchTab('inventario');
-      } catch (err) {
-        console.error('Error al guardar:', err);
-        alert('Hubo un error al guardar en Google Sheets.');
-      } finally {
-        btnSubmit.disabled = false;
-        btnSubmit.innerText = 'Guardar en Alacena';
-      }
-    }
-
-    function editarItem(id) {
-      const item = inventario.find(i => i.id === id);
-      if (!item) return;
-
-      editandoId = id;
-
-      document.getElementById('codigoBarras').value = item.codigoBarras || '';
-      document.getElementById('nombre').value = item.nombre;
-      document.getElementById('cantidad').value = item.cantidad;
-      document.getElementById('unidad').value = item.unidad;
-
-      const tieneCad = Boolean(item.fechaCaducidad);
-      document.getElementById('tieneCaducidad').checked = tieneCad;
-      toggleCaducidadField();
-      if (tieneCad) {
-        document.getElementById('fechaCaducidad').value = item.fechaCaducidad;
-      }
-
-      document.getElementById('btnSubmit').innerText = 'Guardar Cambios (Editar)';
-      document.getElementById('btnCancelEdit').style.display = 'block';
-
-      switchTab('registro');
-    }
-
-    function cancelarEdicion() {
-      detenerEscaner();
-      editandoId = null;
-      document.getElementById('alacenaForm').reset();
-      toggleCaducidadField();
-      document.getElementById('btnSubmit').innerText = 'Guardar en Alacena';
-      document.getElementById('btnCancelEdit').style.display = 'none';
-    }
-
-    async function eliminarItem(id) {
-      if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
-
-      renderCargandoEspecial();
-
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'delete', item: { id } })
-        });
-
-        cargarInventario(true);
-      } catch (err) {
-        console.error('Error al eliminar:', err);
-        alert('No se pudo eliminar el producto.');
-      }
-    }
-
-    function renderCargandoEspecial() {
-      const container = document.getElementById('inventarioContainer');
-      container.innerHTML = '<div class="card empty-msg">Actualizando Hoja de Cálculo... ⏳</div>';
-    }
-
-    function renderInventario() {
-      const container = document.getElementById('inventarioContainer');
-      container.innerHTML = '';
-
-      if (inventario.length === 0) {
-        container.innerHTML = '<div class="card empty-msg">No hay productos registrados en la alacena.</div>';
-        return;
-      }
-
-      const hoy = new Date();
-      hoy.setHours(0, 0, 0, 0);
-
-      const inventarioOrdenado = [...inventario].sort((a, b) => {
-        if (!a.fechaCaducidad) return 1;
-        if (!b.fechaCaducidad) return -1;
-        return new Date(a.fechaCaducidad) - new Date(b.fechaCaducidad);
-      });
-
-      inventarioOrdenado.forEach(item => {
-        let badgeHTML = '';
-
-        if (item.fechaCaducidad) {
-          const [year, month, day] = item.fechaCaducidad.split('-').map(Number);
-          const fechaVenc = new Date(year, month - 1, day);
-          
-          const diffTiempo = fechaVenc - hoy;
-          const diffDias = Math.round(diffTiempo / (1000 * 60 * 60 * 24));
-
-          if (diffDias < 0) {
-            badgeHTML = `<span class="badge badge-danger">Vencido (${item.fechaCaducidad})</span>`;
-          } else if (diffDias <= 5) {
-            badgeHTML = `<span class="badge badge-warning">Vence en ${diffDias} día(s)</span>`;
-          } else {
-            badgeHTML = `<span class="badge badge-ok">Vence: ${item.fechaCaducidad}</span>`;
-          }
-        }
-
-        const barcodeHTML = item.codigoBarras ? `<p class="item-barcode">📷 ${item.codigoBarras}</p>` : '';
-
-        const itemCard = document.createElement('div');
-        itemCard.className = 'item-card';
-        itemCard.innerHTML = `
-          <div class="item-info">
-            <h3>${item.nombre}</h3>
-            <p><strong>${item.cantidad} ${item.unidad}</strong></p>
-            ${barcodeHTML}
-            ${badgeHTML}
-          </div>
-          <div class="item-actions">
-            <button class="btn-action" onclick="editarItem(${item.id})" aria-label="Editar producto">✏️</button>
-            <button class="btn-action" onclick="eliminarItem(${item.id})" aria-label="Eliminar producto">❌</button>
-            <div class="tabs">
-
-    </div>
-
-    <!-- NUEVOS BOTONES DE CONTROL DE HARDWARE -->
-    <div class="card" style="padding: 12px; display: flex; gap: 10px;">
-    </div>
-        `;
-
-        container.appendChild(itemCard);
-      });
-    }
-
-    // Descargar datos en segundo plano inmediatamente al iniciar la web
-    cargarInventario(false);
-    // --- CONTROL DE HARDWARE ESP32 ---
-    async function controlarAlacena(accion) {
-      try {
-        // Realiza la petición a la ruta según la acción elegida
-        await fetch(`http://${ESP32_IP}/api/${accion}`, { mode: 'no-cors' });
-        console.log(`Acción enviada al ESP32: ${accion}`);
-      } catch (err) {
-        console.error('Error de comunicación con el ESP32:', err);
-        alert('No se pudo establecer conexión con el dispositivo.');
-      }
-    }
-  </script>
+    const bc=item.codigoBarras?`<p class="item-barcode">📷 ${item.codigoBarras}</p>`:'';
+    const div=document.createElement('div'); div.className='item-card';
+    div.innerHTML=`<div class="item-info"><h3>${item.nombre}</h3><p><strong>${item.cantidad} ${item.unidad}</strong></p>${bc}${badge}</div><div class="item-actions"><button class="btn-action" onclick="editarItem(${item.id})">✏️</button><button class="btn-action" onclick="eliminarItem(${item.id})">❌</button></div>`;
+    container.appendChild(div);
+  });
+}
+cargarInventario(false);
+</script>
 </body>
 </html>
